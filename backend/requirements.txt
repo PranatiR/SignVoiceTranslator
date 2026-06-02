@@ -1,0 +1,18 @@
+tensorflow==2.13.0
+keras==2.13.1
+opencv-python
+numpy
+flask
+flask-cors
+pillow
+scikit-learn
+matplotlib
+
+# For speech recognition and text-to-speech
+SpeechRecognition
+gTTS
+pyaudio
+
+Flask
+flask-cors
+opencv-python
