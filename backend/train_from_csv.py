@@ -2,7 +2,10 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 from tensorflow import keras
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Model components
 Sequential = keras.Sequential
@@ -58,4 +61,53 @@ checkpoint = ModelCheckpoint('best_hand_sign_model.h5', monitor='val_accuracy', 
 # Train model
 model.fit(X_train, y_train, epochs=30, batch_size=8, validation_data=(X_test, y_test), callbacks=[checkpoint])
 
-print(" Training completed and best model saved as 'best_hand_sign_model.h5'")
+print("\n" + "="*80)
+print("TRAINING COMPLETED - MODEL EVALUATION REPORT")
+print("="*80)
+
+# Make predictions on test set
+y_pred_prob = model.predict(X_test)
+y_pred = np.argmax(y_pred_prob, axis=1)
+y_test_labels = np.argmax(y_test, axis=1)
+
+# Calculate accuracy
+test_accuracy = accuracy_score(y_test_labels, y_pred)
+print(f"\nOverall Test Accuracy: {test_accuracy:.4f} ({test_accuracy*100:.2f}%)")
+
+# Generate classification report
+print("\n" + "-"*80)
+print("DETAILED CLASSIFICATION REPORT")
+print("-"*80)
+# Get unique labels in test set and their corresponding class names
+unique_labels = np.unique(y_test_labels)
+target_names = [le.classes_[i] for i in unique_labels]
+report = classification_report(y_test_labels, y_pred, labels=unique_labels, target_names=target_names, digits=4)
+print(report)
+
+# Confusion Matrix
+print("\n" + "-"*80)
+print("CONFUSION MATRIX")
+print("-"*80)
+cm = confusion_matrix(y_test_labels, y_pred)
+print(cm)
+
+# Save confusion matrix as visualization
+plt.figure(figsize=(12, 10))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+            xticklabels=target_names, yticklabels=target_names)
+plt.title('Confusion Matrix - Hand Sign Classification')
+plt.ylabel('True Label')
+plt.xlabel('Predicted Label')
+plt.tight_layout()
+plt.savefig('confusion_matrix.png', dpi=300, bbox_inches='tight')
+print("\nConfusion matrix visualization saved as 'confusion_matrix.png'")
+
+# Model Summary
+print("\n" + "-"*80)
+print("MODEL ARCHITECTURE SUMMARY")
+print("-"*80)
+model.summary()
+
+print("\n" + "="*80)
+print("Model saved as 'best_hand_sign_model.h5'")
+print("="*80 + "\n")

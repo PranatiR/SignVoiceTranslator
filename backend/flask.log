@@ -1,0 +1,4 @@
+ * Serving Flask app 'app'
+ * Debug mode: on
+[INFO] Loaded model from C:\Users\Prana\Documents\OneDrive\Desktop\SignVoiceTranslator\backend\data\best_hand_sign_model.h5
+[INFO] Loaded 26 label classes
